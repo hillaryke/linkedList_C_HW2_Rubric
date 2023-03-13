@@ -46,7 +46,7 @@ void add_address() {
             printf("\nError: This address already_exists\n");
             return;
         }
-//mqtches two strings with case insensitive comparison
+        //matches two strings with case insensitive comparison
         if (strcasecmp(temp->alias, alias) == 0) {
             printf("\nError: This address already_exists\n");
             return;
@@ -167,9 +167,10 @@ void delete_address() {
         if (strcasecmp(temp->alias, alias) == 0) {
             printf("\nIPV4 Address %d.%d.%d.%d\n", temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
             printf("Do you want to delete this address (y/n): ");
+            fflush(stdin);
             char choice;
-//            fflush(stdin);
             scanf("%c", &choice);
+            printf("%c", choice);
             if (choice == 'y') {
                 // if head node is to be removed
                 if (prev == NULL) {
