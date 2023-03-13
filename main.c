@@ -30,41 +30,39 @@ void readFile() {
     }
 }
 
-//void add_address() {
-//    char address[50];
-//    printf("\nEnter IPV4/alias pair: ");
-//    char c;
-//    scanf("%c", &c);
-//    fgets(address, 50, stdin);
-//    int octet[4];
-//    char alias[11];
-//    sscanf(address, "%d.%d.%d.%d %s", &octet[0], &octet[1], &octet[2], &octet[3], alias);
-//    struct address_t *temp = head;
-//    while (temp != NULL) {
-//        if (temp->octet[0] == octet[0] && temp->octet[1] == octet[1] && temp->octet[2] == octet[2] &&
-//            temp->octet[3] == octet[3]) {
-//            printf("\nError: This address already_exists\n");
-//            return;
-//        }
-////mqtches two strings with case insensitive comparison
-//        if (strcasecmp(temp->alias, alias) == 0) {
-//            printf("\nError: This address already_exists\n");
-//            return;
-//        }
-//        temp = temp->next;
-//    }
-//    temp = (struct address_t *) malloc(sizeof(struct address_t));
-//    temp->octet[0] = octet[0];
-//    temp->octet[1] = octet[1];
-//    temp->octet[2] = octet[2];
-//    temp->octet[3] = octet[3];
-//    strcpy(temp->alias, alias);
-//    temp->next = head;
-//    head = temp;
-//    printf("Address added\n");
-//}
-
-
+void add_address() {
+    char address[50];
+    printf("\nEnter IPV4/alias pair: ");
+    char c;
+    scanf("%c", &c);
+    fgets(address, 50, stdin);
+    int octet[4];
+    char alias[11];
+    sscanf(address, "%d.%d.%d.%d %s", &octet[0], &octet[1], &octet[2], &octet[3], alias);
+    struct address_t *temp = head;
+    while (temp != NULL) {
+        if (temp->octet[0] == octet[0] && temp->octet[1] == octet[1] && temp->octet[2] == octet[2] &&
+            temp->octet[3] == octet[3]) {
+            printf("\nError: This address already_exists\n");
+            return;
+        }
+//mqtches two strings with case insensitive comparison
+        if (strcasecmp(temp->alias, alias) == 0) {
+            printf("\nError: This address already_exists\n");
+            return;
+        }
+        temp = temp->next;
+    }
+    temp = (struct address_t *) malloc(sizeof(struct address_t));
+    temp->octet[0] = octet[0];
+    temp->octet[1] = octet[1];
+    temp->octet[2] = octet[2];
+    temp->octet[3] = octet[3];
+    strcpy(temp->alias, alias);
+    temp->next = head;
+    head = temp;
+    printf("Address added\n");
+}
 
 void lookUp_address() {
     char alias[11];
@@ -81,6 +79,40 @@ void lookUp_address() {
     printf("Not Found\n");
 }
 
+//void update_address() {
+//    char alias[11];
+//    printf("\nEnter alias: ");
+//    scanf("%s", alias);
+//    struct address_t *temp = head;
+//    while (temp != NULL) {
+//        if (strcasecmp(temp->alias, alias) == 0) {
+//            printf("\nIPV4 Address %d.%d.%d.%d\n", temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
+//            printf("\nEnter new IPV4: ");
+//            char address[50];
+//            scanf("%s", address);
+//            int octet[4];
+//            sscanf(address, "%d.%d.%d.%d", &octet[0], &octet[1], &octet[2], &octet[3]);
+//            struct address_t *temp2 = head;
+//            while (temp2 != NULL) {
+//                if (temp2->octet[0] == octet[0] && temp2->octet[1] == octet[1] && temp2->octet[2] == octet[2] &&
+//                    temp2->octet[3] == octet[3]) {
+//                    printf("\nThis IPV4 already_exists\n");
+//                    return;
+//                }
+//                temp2 = temp2->next;
+//            }
+//            temp->octet[0] = octet[0];
+//            temp->octet[1] = octet[1];
+//            temp->octet[2] = octet[2];
+//            temp->octet[3] = octet[3];
+//            printf("Address updated\n");
+//            return;
+//        }
+//        temp = temp->next;
+//    }
+//    printf("Not Found\n");
+//}
+
 void update_address() {
     char alias[11];
     printf("\nEnter alias: ");
@@ -93,12 +125,21 @@ void update_address() {
             char address[50];
             scanf("%s", address);
             int octet[4];
-            sscanf(address, "%d.%d.%d.%d", &octet[0], &octet[1], &octet[2], &octet[3]);
+            if (sscanf(address, "%d.%d.%d.%d", &octet[0], &octet[1], &octet[2], &octet[3]) != 4) {
+                printf("Invalid input! Please enter the address in the correct format\n");
+                return;
+            }
+            for (int i = 0; i < 4; i++) {
+                if (octet[i] < 0 || octet[i] > 255) {
+                    printf("Invalid input! Please enter values between 0-255\n");
+                    return;
+                }
+            }
             struct address_t *temp2 = head;
             while (temp2 != NULL) {
-                if (temp2->octet[0] == octet[0] && temp2->octet[1] == octet[1] && temp2->octet[2] == octet[2] &&
+                if (temp2 != temp && temp2->octet[0] == octet[0] && temp2->octet[1] == octet[1] && temp2->octet[2] == octet[2] &&
                     temp2->octet[3] == octet[3]) {
-                    printf("\nThis IPV4 already_exists\n");
+                    printf("Error: The entered address already exists\n");
                     return;
                 }
                 temp2 = temp2->next;
@@ -107,13 +148,14 @@ void update_address() {
             temp->octet[1] = octet[1];
             temp->octet[2] = octet[2];
             temp->octet[3] = octet[3];
-            printf("Address updated\n");
+            printf("IPV4 Address updated\n");
             return;
         }
         temp = temp->next;
     }
-    printf("Not Found\n");
+    printf("Error: Alias not found\n");
 }
+
 
 void delete_address() {
     char alias[11];
@@ -126,10 +168,10 @@ void delete_address() {
             printf("\nIPV4 Address %d.%d.%d.%d\n", temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
             printf("Do you want to delete this address (y/n): ");
             char choice;
-            fflush(stdin);
+//            fflush(stdin);
             scanf("%c", &choice);
             if (choice == 'y') {
-// if head node is to be removed
+                // if head node is to be removed
                 if (prev == NULL) {
                     head = temp->next;
                 } else {
@@ -150,12 +192,15 @@ void display_location() {
     int first, second;
     printf("\n");
     do {
-        printf("Enter first octet: ");
+        printf("Enter location value # 1 (0-255): ");
         scanf("%d", &first);
+        if (first < 0 || first > 255) {
+            printf("error: %d is an illegal entry – please reenter ", first);
+        }
     } while (first < 0 || first > 255);
     printf("\n");
     do {
-        printf("Enter second octet: ");
+        printf("Enter location value # 2: (0-255):");
         scanf("%d", &second);
     } while (second < 0 || second > 255);
     struct address_t *temp = head;
@@ -201,6 +246,7 @@ void display_list() {
 }
 
 void quit() {
+    printf("Goodbye!");
     exit(0);
 }
 
