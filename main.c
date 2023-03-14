@@ -227,37 +227,73 @@ void update_address() {
 }
 
 
-void delete_address() {
+//void delete_address() {
+//    char alias[11];
+//    printf("\nEnter alias: ");
+//    scanf("%s", alias);
+//    struct address_t *temp = head;
+//    struct address_t *prev = NULL;
+//    while (temp != NULL) {
+//        if (strcasecmp(temp->alias, alias) == 0) {
+//            printf("\nIPV4 Address %d.%d.%d.%d\n", temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
+//            printf("Do you want to delete this address (y/n): ");
+//            fflush(stdin);
+//            char choice;
+//            scanf("%c", &choice);
+//            printf("%c", choice);
+//            if (choice == 'y') {
+//                // if head node is to be removed
+//                if (prev == NULL) {
+//                    head = temp->next;
+//                } else {
+//                    prev->next = temp->next;
+//                }
+//                free(temp);
+//                printf("Address deleted\n");
+//                return;
+//            } else return;
+//        }
+//        prev = temp;
+//        temp = temp->next;
+//    }
+//    printf("Not Found\n");
+//}
+
+void deleteAddress() {
     char alias[11];
-    printf("\nEnter alias: ");
+    printf("Enter alias of address to delete: ");
     scanf("%s", alias);
-    struct address_t *temp = head;
+
+    // Find address node with matching alias
+    struct address_t *current = head;
     struct address_t *prev = NULL;
-    while (temp != NULL) {
-        if (strcasecmp(temp->alias, alias) == 0) {
-            printf("\nIPV4 Address %d.%d.%d.%d\n", temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
-            printf("Do you want to delete this address (y/n): ");
-            fflush(stdin);
-            char choice;
-            scanf("%c", &choice);
-            printf("%c", choice);
-            if (choice == 'y') {
-                // if head node is to be removed
-                if (prev == NULL) {
-                    head = temp->next;
-                } else {
-                    prev->next = temp->next;
-                }
-                free(temp);
-                printf("Address deleted\n");
-                return;
-            } else return;
-        }
-        prev = temp;
-        temp = temp->next;
+    while (current != NULL && strcmp(current->alias, alias) != 0) {
+        prev = current;
+        current = current->next;
     }
-    printf("Not Found\n");
+
+    // If address node found, prompt user to confirm deletion
+    if (current != NULL) {
+        printf("Are you sure you want to delete the address '%s'? (y/n): ", alias);
+        char confirm;
+        scanf(" %c", &confirm);
+        if (confirm == 'y' || confirm == 'Y') {
+            // Delete address node
+            if (prev == NULL) {
+                head = current->next;
+            } else {
+                prev->next = current->next;
+            }
+            free(current);
+            printf("%s deleted\n" ,alias);
+        } else {
+            printf("Deletion cancelled\n");
+        }
+    } else {
+        printf("Error: '%s' does not exist\n", alias);
+    }
 }
+
 
 void display_location() {
     int first, second;
@@ -343,7 +379,7 @@ int main() {
         if (choice == 1) addAddress();
         else if (choice == 2) lookUp_address();
         else if (choice == 3) update_address();
-        else if (choice == 4) delete_address();
+        else if (choice == 4) deleteAddress();
         else if (choice == 5) display_list();
         else if (choice == 6) display_location();
         else if (choice == 7) save_to_file();
