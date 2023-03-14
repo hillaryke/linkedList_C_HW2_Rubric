@@ -174,12 +174,12 @@ void lookUp_address() {
     struct address_t *temp = head;
     while (temp != NULL) {
         if (strcasecmp(temp->alias, alias) == 0) {
-            printf("\nIPV4 Address %d.%d.%d.%d\n", temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
+            printf("Address for %s: %d.%d.%d.%d\n", alias, temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
             return;
         }
         temp = temp->next;
     }
-    printf("Not Found\n");
+    printf("error: %s does not exist\n", alias);
 }
 
 void update_address() {
@@ -189,8 +189,8 @@ void update_address() {
     struct address_t *temp = head;
     while (temp != NULL) {
         if (strcasecmp(temp->alias, alias) == 0) {
-            printf("\nIPV4 Address %d.%d.%d.%d\n", temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
-            printf("\nEnter new IPV4: ");
+            printf("Update address for %s: %d.%d.%d.%d\n", alias, temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
+            printf("Enter new IPV4: ");
             char address[50];
             scanf("%s", address);
             int octet[4];
