@@ -69,7 +69,7 @@ void add_address() {
     int IP[4];
 
     // Prompt user for IPv4 address/alias pair
-    printf("Enter alias (up to 10 characters): ");
+    printf("Enter alias: ");
     scanf("%s", alias);
 
     if (findAddressByAlias(alias) != NULL) {
@@ -257,7 +257,7 @@ void save_to_file() {
     char filename[50];
 
     // Prompt user for filename
-    printf("Enter filename to save addresses to: ");
+    printf("Enter file name: ");
     scanf("%s", filename);
 
     // Open file for writing
@@ -277,7 +277,7 @@ void save_to_file() {
     // Close file
     fclose(file);
 
-    printf("Addresses saved to file successfully\n");
+    printf("File saved. \n");
 }
 
 
@@ -295,7 +295,7 @@ void display_list() {
         count++;
         temp = temp->next;
     }
-    printf("\n%d nodes in List\n", count);
+    printf("\nTotal node count: %d\n", count);
 }
 
 void quit() {
