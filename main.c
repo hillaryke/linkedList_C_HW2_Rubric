@@ -253,22 +253,51 @@ void display_location() {
     }
 }
 
+//void save_to_file() {
+//    if (head == NULL) {
+//        printf("\nList empty nothing to save\n");
+//        return;
+//    }
+//    printf("\nEnter filename: ");
+//    char filename[30];
+//    scanf("%s", filename);
+//    FILE *fp = fopen(filename, "w");
+//    struct address_t *temp = head;
+//    while (temp != NULL) {
+//        fprintf(fp, "%d.%d.%d.%d %s\n", temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3], temp->alias);
+//        temp = temp->next;
+//    }
+//    printf("Saved data to %s\n", filename);
+//}
+
 void save_to_file() {
-    if (head == NULL) {
-        printf("\nList empty nothing to save\n");
+    char filename[50];
+
+    // Prompt user for filename
+    printf("Enter filename to save addresses to: ");
+    scanf("%s", filename);
+
+    // Open file for writing
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Error: Failed to open file for writing\n");
         return;
     }
-    printf("\nEnter filename: ");
-    char filename[30];
-    scanf("%s", filename);
-    FILE *fp = fopen(filename, "w");
-    struct address_t *temp = head;
-    while (temp != NULL) {
-        fprintf(fp, "%d.%d.%d.%d %s\n", temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3], temp->alias);
-        temp = temp->next;
+
+    // Traverse list of addresses and write to file
+    struct address_t *current = head;
+    while (current != NULL) {
+        fprintf(file, "%d.%d.%d.%d %s\n", current->octet[0], current->octet[1], current->octet[2], current->octet[3], current->alias);
+        current = current->next;
     }
-    printf("Saved data to %s\n", filename);
+
+    // Close file
+    fclose(file);
+
+    printf("Addresses saved to file successfully\n");
 }
+
+
 
 void display_list() {
     printf("\n");
