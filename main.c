@@ -190,20 +190,58 @@ void update_address() {
     while (temp != NULL) {
         if (strcasecmp(temp->alias, alias) == 0) {
             printf("Update address for %s: %d.%d.%d.%d\n", alias, temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
-            printf("Enter new IPV4: ");
-            char address[50];
-            scanf("%s", address);
-            int octet[4];
-            if (sscanf(address, "%d.%d.%d.%d", &octet[0], &octet[1], &octet[2], &octet[3]) != 4) {
-                printf("Invalid input! Please enter the address in the correct format\n");
-                return;
+//            printf("Enter new IPV4: ");
+//            char address[50];
+//            scanf("%s", address);
+//            int octet[4];
+//            if (sscanf(address, "%d.%d.%d.%d", &octet[0], &octet[1], &octet[2], &octet[3]) != 4) {
+//                printf("Invalid input! Please enter the address in the correct format\n");
+//                return;
+//            }
+//            for (int i = 0; i < 4; i++) {
+//                if (octet[i] < 0 || octet[i] > 255) {
+//                    printf("Invalid input! Please enter values between 0-255\n");
+//                    return;
+//                }
+//            }
+
+            int octet[4] = {-1, -1, -1, -1};
+//            printf("\n");
+//            do {
+//                printf("Enter location value # 1 (0-255): ");
+//                scanf("%d", &octet[0]);
+//                if (octet[0] < 0 || octet[0] > 255) {
+//                    printf("error: %d is an illegal entry – please reenter \n", octet[0]);
+//                }
+//            } while (octet[0] < 0 || octet[0] > 255);
+//            printf("\n");
+//            do {
+//                printf("Enter location value # 2: (0-255): ");
+//                scanf("%d", &octet[1]);
+//            } while (octet[1] < 0 || octet[1] > 255);
+//            printf("\n");
+//            do {
+//                printf("Enter value # 3: (0-255): ");
+//                scanf("%d", &octet[2]);
+//            } while (octet[2] < 0 || octet[2] > 255);
+//            printf("\n");
+//            do {
+//                printf("Enter value # 4: (0-255): ");
+//                scanf("%d", &octet[3]);
+//            } while (octet[3] < 0 || octet[3] > 255);
+
+            for(int i = 0; i < 4; i++) {
+                do {
+                    printf("\n");
+                    printf("Enter location value # %d: (0-255): ", i+1);
+                    scanf("%d", &octet[i]);
+                    if (octet[i] < 0 || octet[i] > 255) {
+                        printf("error: %d is an illegal entry – please reenter \n", octet[0]);
+                    }
+                } while (octet[i] < 0 || octet[i] > 255 );
             }
-            for (int i = 0; i < 4; i++) {
-                if (octet[i] < 0 || octet[i] > 255) {
-                    printf("Invalid input! Please enter values between 0-255\n");
-                    return;
-                }
-            }
+
+
             struct address_t *temp2 = head;
             while (temp2 != NULL) {
                 if (temp2 != temp && temp2->octet[0] == octet[0] && temp2->octet[1] == octet[1] &&
@@ -218,7 +256,7 @@ void update_address() {
             temp->octet[1] = octet[1];
             temp->octet[2] = octet[2];
             temp->octet[3] = octet[3];
-            printf("IPV4 Address updated\n");
+            printf("Updated address for %s \n", alias);
             return;
         }
         temp = temp->next;
