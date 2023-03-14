@@ -266,18 +266,18 @@ void display_location() {
         printf("Enter location value # 1 (0-255): ");
         scanf("%d", &first);
         if (first < 0 || first > 255) {
-            printf("error: %d is an illegal entry – please reenter ", first);
+            printf("error: %d is an illegal entry – please reenter \n", first);
         }
     } while (first < 0 || first > 255);
     printf("\n");
     do {
-        printf("Enter location value # 2: (0-255):");
+        printf("Enter location value # 2: (0-255): ");
         scanf("%d", &second);
     } while (second < 0 || second > 255);
     struct address_t *temp = head;
     while (temp != NULL) {
         if (temp->octet[0] == first && temp->octet[1] == second) {
-            printf("%s\n", temp->alias);
+            printf("%d. %s\n", temp->octet[3], temp->alias);
         }
         temp = temp->next;
     }
