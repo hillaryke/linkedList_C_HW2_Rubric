@@ -10,6 +10,36 @@ struct address_t {
 
 struct address_t *head = NULL;
 
+struct address_t *findAddressByAlias(char *alias) {
+    struct address_t *current = head;
+
+    while (current != NULL) {
+        if (strcmp(current->alias, alias) == 0) {
+            return current;
+        }
+        current = current->next;
+    }
+
+    return NULL;
+}
+
+struct address_t *findAddressByValue(int octet1, int octet2, int octet3, int octet4) {
+    struct address_t *current = head;
+
+    while (current != NULL) {
+        if (current->octet[0] == octet1 &&
+            current->octet[1] == octet2 &&
+            current->octet[2] == octet3 &&
+            current->octet[3] == octet4) {
+            return current;
+        }
+        current = current->next;
+    }
+
+    return NULL;
+}
+
+
 void readFile() {
     FILE *fp = fopen("/home/hilla/Desktop/C_PLAIN/linked_dsa_CS531/CS531_Inet.txt", "r");
     if (fp == NULL) {
@@ -30,39 +60,112 @@ void readFile() {
     }
 }
 
-void add_address() {
-    char address[50];
-    printf("\nEnter IPV4/alias pair: ");
-    char c;
-    scanf("%c", &c);
-    fgets(address, 50, stdin);
-    int octet[4];
+//void add_address() {
+//    char address[50];
+//    printf("\nEnter IPV4/alias pair: ");
+//    char c;
+//    scanf("%c", &c);
+//    fgets(address, 50, stdin);
+//    int octet[4];
+//    char alias[11];
+//    sscanf(address, "%d.%d.%d.%d %s", &octet[0], &octet[1], &octet[2], &octet[3], alias);
+//    struct address_t *temp = head;
+//    while (temp != NULL) {
+//        if (temp->octet[0] == octet[0] && temp->octet[1] == octet[1] && temp->octet[2] == octet[2] &&
+//            temp->octet[3] == octet[3]) {
+//            printf("\nError: This address already_exists\n");
+//            return;
+//        }
+//        //matches two strings with case insensitive comparison
+//        if (strcasecmp(temp->alias, alias) == 0) {
+//            printf("\nError: This address already_exists\n");
+//            return;
+//        }
+//        temp = temp->next;
+//    }
+//    temp = (struct address_t *) malloc(sizeof(struct address_t));
+//    temp->octet[0] = octet[0];
+//    temp->octet[1] = octet[1];
+//    temp->octet[2] = octet[2];
+//    temp->octet[3] = octet[3];
+//    strcpy(temp->alias, alias);
+//    temp->next = head;
+//    head = temp;
+//    printf("Address added\n");
+//}
+
+void addAddress() {
     char alias[11];
-    sscanf(address, "%d.%d.%d.%d %s", &octet[0], &octet[1], &octet[2], &octet[3], alias);
-    struct address_t *temp = head;
-    while (temp != NULL) {
-        if (temp->octet[0] == octet[0] && temp->octet[1] == octet[1] && temp->octet[2] == octet[2] &&
-            temp->octet[3] == octet[3]) {
-            printf("\nError: This address already_exists\n");
-            return;
-        }
-        //matches two strings with case insensitive comparison
-        if (strcasecmp(temp->alias, alias) == 0) {
-            printf("\nError: This address already_exists\n");
-            return;
-        }
-        temp = temp->next;
+    int octets[4];
+
+    char iP[25];
+    char dot;
+    int IP[4];
+
+    // Prompt user for IPv4 address/alias pair
+    printf("Enter alias (up to 10 characters): ");
+    scanf("%s", alias);
+
+    if (findAddressByAlias(alias) != NULL) {
+        printf("Error: alias already exists\n");
+        return;
     }
-    temp = (struct address_t *) malloc(sizeof(struct address_t));
-    temp->octet[0] = octet[0];
-    temp->octet[1] = octet[1];
-    temp->octet[2] = octet[2];
-    temp->octet[3] = octet[3];
-    strcpy(temp->alias, alias);
-    temp->next = head;
-    head = temp;
-    printf("Address added\n");
+
+    while (1) {
+        // take user input for iP address
+        printf("Enter address for %s: ", alias);
+        scanf("%s", iP);
+
+        // converts the string to int
+        sscanf(iP, "%d%c%d%c%d%c%d", &IP[0], &dot, &IP[1], &dot, &IP[2], &dot, &IP[3]);
+//    struct address_t *t;
+
+
+        // check if iP address octets are valid
+        if (IP[0] < 0 || IP[0] > 255) {
+            printf("error: %s is an illegal address – please reenter: \n", iP);
+            continue;
+        }
+        if (IP[1] < 0 || IP[1] > 255) {
+            printf("error: %s is an illegal address – please reenter: \n", iP);
+            continue;
+        }
+        if (IP[2] < 0 || IP[2] > 255) {
+            printf("error: %s is an illegal address – please reenter: \n", iP);
+            continue;
+        }
+        if (IP[3] < 0 || IP[3] > 255) {
+            printf("error: %s is an illegal address – please reenter: \n", iP);
+            continue;
+        }
+        break;
+    }
+
+    // Check that alias is not too long
+    if (strlen(alias) > 10) {
+        printf("Error: Alias must be 10 characters or less\n");
+        return;
+    }
+
+    // Check if address or alias already exists in list
+    if (findAddressByValue(octets[0], octets[1], octets[2], octets[3]) != NULL) {
+        printf("Error: Address already exists\n");
+        return;
+    }
+
+    // Create new address_t node and add to head of linked list
+    struct address_t *newNode = (struct address_t *) malloc(sizeof(struct address_t));
+    newNode->octet[0] = octets[0];
+    newNode->octet[1] = octets[1];
+    newNode->octet[2] = octets[2];
+    newNode->octet[3] = octets[3];
+    strcpy(newNode->alias, alias);
+    newNode->next = head;
+    head = newNode;
+
+    printf("Address added successfully\n");
 }
+
 
 void lookUp_address() {
     char alias[11];
@@ -78,40 +181,6 @@ void lookUp_address() {
     }
     printf("Not Found\n");
 }
-
-//void update_address() {
-//    char alias[11];
-//    printf("\nEnter alias: ");
-//    scanf("%s", alias);
-//    struct address_t *temp = head;
-//    while (temp != NULL) {
-//        if (strcasecmp(temp->alias, alias) == 0) {
-//            printf("\nIPV4 Address %d.%d.%d.%d\n", temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
-//            printf("\nEnter new IPV4: ");
-//            char address[50];
-//            scanf("%s", address);
-//            int octet[4];
-//            sscanf(address, "%d.%d.%d.%d", &octet[0], &octet[1], &octet[2], &octet[3]);
-//            struct address_t *temp2 = head;
-//            while (temp2 != NULL) {
-//                if (temp2->octet[0] == octet[0] && temp2->octet[1] == octet[1] && temp2->octet[2] == octet[2] &&
-//                    temp2->octet[3] == octet[3]) {
-//                    printf("\nThis IPV4 already_exists\n");
-//                    return;
-//                }
-//                temp2 = temp2->next;
-//            }
-//            temp->octet[0] = octet[0];
-//            temp->octet[1] = octet[1];
-//            temp->octet[2] = octet[2];
-//            temp->octet[3] = octet[3];
-//            printf("Address updated\n");
-//            return;
-//        }
-//        temp = temp->next;
-//    }
-//    printf("Not Found\n");
-//}
 
 void update_address() {
     char alias[11];
@@ -137,7 +206,8 @@ void update_address() {
             }
             struct address_t *temp2 = head;
             while (temp2 != NULL) {
-                if (temp2 != temp && temp2->octet[0] == octet[0] && temp2->octet[1] == octet[1] && temp2->octet[2] == octet[2] &&
+                if (temp2 != temp && temp2->octet[0] == octet[0] && temp2->octet[1] == octet[1] &&
+                    temp2->octet[2] == octet[2] &&
                     temp2->octet[3] == octet[3]) {
                     printf("Error: The entered address already exists\n");
                     return;
@@ -270,7 +340,7 @@ int main() {
     readFile();
     while (1) {
         int choice = menu();
-        if (choice == 1) add_address();
+        if (choice == 1) addAddress();
         else if (choice == 2) lookUp_address();
         else if (choice == 3) update_address();
         else if (choice == 4) delete_address();
